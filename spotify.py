@@ -1,13 +1,14 @@
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
-from playlist import Playlist, Song
+from playlist import Playlist
 from typing import List
 import os
+from app import log
 
 client_id = os.getenv("AI_PLAYLIST_SPOTIPY_CLIENT_ID")
 client_secret = os.getenv("AI_PLAYLIST_SPOTIPY_CLIENT_SECRET")
 redirect_uri = os.getenv("AI_PLAYLIST_SPOTIPY_REDIRECT_URL")
-print(f"Redirect URL for authorization flow: {redirect_uri}")
+log.debug(f"Redirect URL for authorization flow: {redirect_uri}")
 
 auth_manager = SpotifyOAuth(
     client_id=client_id,
@@ -25,14 +26,13 @@ def get_spotify_track_ids(playlist: Playlist) -> List[str]:
     for song in playlist.songs:
         query = f"{song.title} artist:{song.artist}"
 
-        print(f"Searching for song with query: {query}")
+        log.info(f"Searching for song with query: {query}")
         result = sp.search(q=query, type="track", limit=1)
-        print(f"Result returned for song from Spotify search: {result}")
+        log.info(f"Result returned for song from Spotify search: {result}")
 
         # if the search returns no results, we can skip this iteration
         if result["tracks"]["total"] < 1:
-            # TODO: log.warn
-            print(f"Could not find any result for query: {query}")
+            log.warn(f"Could not find any result for query: {query}")
             continue
 
         track_id = result["tracks"]["items"][0]["id"]
@@ -41,7 +41,7 @@ def get_spotify_track_ids(playlist: Playlist) -> List[str]:
     return track_ids
 
 def create_spotify_playlist(track_ids: List[str], title: str, description: str) -> str:
-    print(f"Creating playlist from track_ids: {track_ids}")
+    log.info(f"Creating playlist from track_ids: {track_ids}")
     user_id = sp.me()["id"]
 
     # create playlist
@@ -51,7 +51,7 @@ def create_spotify_playlist(track_ids: List[str], title: str, description: str) 
         public=False,
         description=description
     )
-    print(f"New playlist returned from Spotify: {new_playlist}")
+    log.info(f"New playlist returned from Spotify: {new_playlist}")
 
     # add the tracks to the playlist
     sp.playlist_add_items(playlist_id=new_playlist["id"], items=track_ids)

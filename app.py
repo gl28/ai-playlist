@@ -3,10 +3,11 @@ from flask import Flask, request, redirect, session, render_template
 from openai_adapter import get_playlist_json, get_spotify_track_ids
 from playlist import convert_dict_to_playlist, Playlist
 from spotify import auth_manager, create_spotify_playlist
-from dataclasses import replace
+from logging_config import setup_logger
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
+logger = setup_logger(app.name)
 
 @app.route("/")
 def index():
