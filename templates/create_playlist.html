@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Playlist Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #222;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 1.2em;
+            text-align: center;
+            max-width: 400px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        input[type="text"] {
+            font-size: 1.2em;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 24px;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 20px;
+        }
+        input[type="submit"] {
+            font-size: 1.2em;
+            background-color: #4A90E2;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 24px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        input[type="submit"]:hover {
+            background-color: #3A78D2;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <h1>AI Playlist Generator</h1>
+    <form id="playlistForm">
+        <input type="text" id="input" name="input" value="{{ input }}" placeholder="Type your description here..." required>
+        <input type="submit" value="Generate Playlist">
+    </form>
+    <div id="status"></div>
+    <div id="playlist-container"></div>
+    <div id="spotify-link"></div>
+
+    <script>
+        document.getElementById("playlistForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const statusElement = document.getElementById("status");
+            const playlistContainerElement = document.getElementById("playlist-container");
+            const spotifyLinkElement = document.getElementById("spotify-link");
+            const input = document.getElementById("input").value;
+
+            // Call the get_playlist_suggestions API with the input parameter and display a loading message
+            statusElement.textContent = "The AI is thinking. This can take a few seconds...";
+            playlistContainerElement.innerHTML = "";
+            spotifyLinkElement.textContent = "";
+            const response1 = await fetch(`/get_playlist_suggestions?input=${input}`);
+            const playlistData = await response1.json();
+            displayPlaylistData(playlistData);
+
+            // Call the create_spotify_playlist API with the input parameter and display a loading message
+            statusElement.textContent = "Creating a Spotify playlist...";
+            const response2 = await fetch("/create_spotify_playlist_from_json", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ input: playlistData })
+            });
+            const playlistLink = await response2.text();
+            statusElement.textContent = "";
+            spotifyLinkElement.innerHTML = `<a href="${playlistLink}">Open playlist on Spotify</a>`;
+        });
+
+        function displayPlaylistData(playlistData) {
+            const playlistContainerElement = document.getElementById("playlist-container");
+
+            // Create and insert playlist title and description
+            const titleElement = document.createElement("h2");
+            titleElement.textContent = playlistData.title;
+            const descriptionElement = document.createElement("p");
+            descriptionElement.textContent = playlistData.description;
+            playlistContainerElement.appendChild(titleElement);
+            playlistContainerElement.appendChild(descriptionElement);
+
+            // Create and insert song list
+            const songListElement = document.createElement("ul");
+            playlistData.songs.forEach(song => {
+                const songListItemElement = document.createElement("li");
+                songListItemElement.textContent = `${song.title} by ${song.artist}`;
+                songListElement.appendChild(songListItemElement);
+            });
+            playlistContainerElement.appendChild(songListElement);
+        }
+    </script>
+</body>
+</html>

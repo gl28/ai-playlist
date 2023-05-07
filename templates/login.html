@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Playlist Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #222;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 1.2em;
+            text-align: center;
+            max-width: 400px;
+        }
+        .login-button {
+            display: inline-block;
+            background-color: #4A90E2;
+            color: #fff;
+            padding: 12px 24px;
+            font-size: 1.2em;
+            border-radius: 50px;
+            text-decoration: none;
+            margin-top: 30px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .login-button:hover {
+            background-color: #3A78D2;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <h1>AI Playlist Generator</h1>
+    <p>Log in with your Spotify account to get personalized AI playlist recommendations.</p>
+    <a href="/authorize" class="login-button">Log in</a>
+</body>
+</html>
