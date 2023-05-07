@@ -1,6 +1,7 @@
 import openai
 import os
 import json
+import time
 from app import log
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -34,6 +35,7 @@ Your response should be a JSON object formatted as follows:
 """
 
 def get_playlist_json(user_prompt: str) -> str:
+    start = time.time()
     log.info(f"Calling OpenAI to get JSON formatted playlist for prompt: {user_prompt}")
     response = openai.ChatCompletion.create(
         model="gpt-4",
@@ -44,5 +46,6 @@ def get_playlist_json(user_prompt: str) -> str:
     )
 
     assistant_response = response['choices'][0]['message']['content']
+    log.info(f"Calling OpenAI to get playlist took: {(time.time() - start) * 1000} ms")
     log.info(f"OpenAI JSON playlist response: {assistant_response}")
     return assistant_response
