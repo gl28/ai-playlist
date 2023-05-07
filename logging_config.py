@@ -20,3 +20,5 @@ def setup_logger(app_name: str) -> Logger:
     logger.addHandler(file_handler)
 
     return logger
+
+log = setup_logger("AIPlaylist")

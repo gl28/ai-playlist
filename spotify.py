@@ -3,7 +3,7 @@ from spotipy.oauth2 import SpotifyOAuth
 from playlist import Playlist
 from typing import List
 import os
-from app import log
+from logging_config import log
 
 client_id = os.getenv("AI_PLAYLIST_SPOTIPY_CLIENT_ID")
 client_secret = os.getenv("AI_PLAYLIST_SPOTIPY_CLIENT_SECRET")

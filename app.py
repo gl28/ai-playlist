@@ -1,13 +1,12 @@
 import os
 from flask import Flask, request, redirect, session, render_template
-from openai_adapter import get_playlist_json, get_spotify_track_ids
+from openai_adapter import get_playlist_json
 from playlist import convert_dict_to_playlist, Playlist
-from spotify import auth_manager, create_spotify_playlist
-from logging_config import setup_logger
+from spotify import auth_manager, create_spotify_playlist, get_spotify_track_ids
+from logging_config import log
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
-logger = setup_logger(app.name)
 
 @app.route("/")
 def index():
@@ -24,11 +23,11 @@ def get_playlist_suggestions():
 @app.route("/create_spotify_playlist_from_json", methods=["POST"])
 def create_spotify_playlist_from_json():
     playlist_dict = request.json.get("input", "")
-    print(f"Playlist data received by API: {playlist_dict}")
+    log.debug(f"Playlist data received by API: {playlist_dict}")
 
     playlist = convert_dict_to_playlist(playlist_dict)
     track_ids = get_spotify_track_ids(playlist)
-    print(f"Creating playlist for {len(track_ids)} track ids: {track_ids}")
+    log.debug(f"Creating playlist for {len(track_ids)} track ids: {track_ids}")
     
     playlist_link = create_spotify_playlist(track_ids, playlist.title, playlist.description)
     return playlist_link
@@ -39,9 +38,9 @@ def login():
 
 @app.route("/authorize")
 def authorize():
-    print("Authorizing...")
+    log.info("Beginning authorization flow...")
     auth_url = auth_manager.get_authorize_url()
-    print(f"Auth url {auth_url}")
+    log.debug(f"Auth url {auth_url}")
     return redirect(auth_url)
 
 @app.route("/callback")

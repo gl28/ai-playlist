@@ -2,7 +2,7 @@ import openai
 import os
 import json
 import time
-from app import log
+from logging_config import log
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
