@@ -3,6 +3,7 @@ from spotipy.oauth2 import SpotifyOAuth
 from playlist import Playlist
 from typing import List
 import os
+from tenacity import retry, stop_after_attempt, wait_exponential
 from logging_config import log
 
 client_id = os.getenv("AI_PLAYLIST_SPOTIPY_CLIENT_ID")
@@ -19,6 +20,7 @@ auth_manager = SpotifyOAuth(
 
 sp = spotipy.Spotify(auth_manager=auth_manager)
 
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=4, max=10))
 def get_spotify_track_ids(playlist: Playlist) -> List[str]:
     track_ids = []
 
@@ -40,6 +42,7 @@ def get_spotify_track_ids(playlist: Playlist) -> List[str]:
 
     return track_ids
 
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=4, max=10))
 def create_spotify_playlist(track_ids: List[str], title: str, description: str) -> str:
     log.info(f"Creating playlist from track_ids: {track_ids}")
     user_id = sp.me()["id"]

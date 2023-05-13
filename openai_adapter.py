@@ -2,6 +2,7 @@ import openai
 import os
 import json
 import time
+from tenacity import retry, stop_after_attempt, wait_exponential
 from logging_config import log
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -34,6 +35,7 @@ Your response should be a JSON object formatted as follows:
 {json.dumps(example_playlist)}
 """
 
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=4, max=10))
 def get_playlist_json(user_prompt: str) -> str:
     start = time.time()
     log.info(f"Calling OpenAI to get JSON formatted playlist for prompt: {user_prompt}")
