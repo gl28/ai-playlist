@@ -1,7 +1,7 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #222;
-    color: #fff;
+    font-family: Roboto, sans-serif;
+    background-color: #0D160B;
+    color: #eee;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -22,7 +22,7 @@ p {
 
 .login-button {
     display: inline-block;
-    background-color: #4A90E2;
+    background-color: #1B5299;
     color: #fff;
     padding: 12px 24px;
     font-size: 1.2em;
@@ -33,7 +33,7 @@ p {
 }
 
 .login-button:hover {
-    background-color: #3A78D2;
+    background-color: #1B5299;
     transform: scale(1.05);
 }
 
@@ -60,7 +60,7 @@ input[type="text"] {
 
 input[type="submit"] {
     font-size: 1.2em;
-    background-color: #4A90E2;
+    background-color: #1B5299;
     color: #fff;
     border: none;
     border-radius: 50px;
@@ -70,7 +70,7 @@ input[type="submit"] {
 }
 
 input[type="submit"]:hover {
-    background-color: #3A78D2;
+    background-color: #1B5299;
     transform: scale(1.05);
 }
 
@@ -78,12 +78,53 @@ input[type="submit"]:hover {
     margin-top: 20px;
 }
 
+#playlist-description-container {
+    width: 90%;
+    max-width: 400px;
+}
+
+#playlist-contents-container {
+    width: 90%;
+    max-width: 400px;
+}
+
+#playlist-title {
+    font-size: 1.7em;
+    font-weight: 600;
+    margin-bottom: 0px;
+}
+
+#playlist-description {
+    font-size: 1em;
+    font-style: italic;
+}
+
+ul {
+    padding-left: 0px;
+    list-style-type: none;
+}
+
+.playlist-item {
+    margin-bottom: 10px
+}
+
+.song-title {
+    font-size: 1.3em;
+    font-weight: 700;
+}
+
+.song-artist {
+    font-size: 0.9em;
+    font-weight: 300;
+}
+
 #spotify-link {
-    margin-top: 20px;
+    margin-top: 30px;
+    margin-bottom: 30px;
 }
 
 #spotify-link a {
-    background-color: #4A90E2;
+    background-color: #1B5299;
     color: #fff;
     border: none;
     border-radius: 50px;

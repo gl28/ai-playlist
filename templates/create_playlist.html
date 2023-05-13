@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
     <title>AI Playlist Generator</title>
 </head>
@@ -13,22 +14,23 @@
         <input type="submit" value="Generate Playlist">
     </form>
     <div id="status"></div>
-    <div id="playlist-container"></div>
-    <div id="spotify-link"></div>
+    <div id="playlist-description-container">
+        <h2 id="playlist-title"></h2>
+        <p id="playlist-description"></p>
+        <div id="spotify-link"></div>
+    </div>
+    <div id="playlist-contents-container"></div>
 
     <script>
         document.getElementById("playlistForm").addEventListener("submit", async function(event) {
             event.preventDefault();
 
             const statusElement = document.getElementById("status");
-            const playlistContainerElement = document.getElementById("playlist-container");
             const spotifyLinkElement = document.getElementById("spotify-link");
             const input = document.getElementById("input").value;
 
             // Call the get_playlist_suggestions API with the input parameter and display a loading message
             statusElement.textContent = "The AI is thinking. This can sometimes take a couple minutes...";
-            playlistContainerElement.innerHTML = "";
-            spotifyLinkElement.textContent = "";
             const response1 = await fetch(`/get_playlist_suggestions?input=${input}`);
             const playlistData = await response1.json();
             displayPlaylistData(playlistData);
@@ -48,21 +50,29 @@
         });
 
         function displayPlaylistData(playlistData) {
-            const playlistContainerElement = document.getElementById("playlist-container");
-
-            // Create and insert playlist title and description
-            const titleElement = document.createElement("h2");
+            // Insert playlist title and description
+            const titleElement = document.getElementById("playlist-title");
             titleElement.textContent = playlistData.title;
-            const descriptionElement = document.createElement("p");
+            const descriptionElement = document.getElementById("playlist-description");
             descriptionElement.textContent = playlistData.description;
-            playlistContainerElement.appendChild(titleElement);
-            playlistContainerElement.appendChild(descriptionElement);
 
             // Create and insert song list
+            const playlistContainerElement = document.getElementById("playlist-contents-container");
             const songListElement = document.createElement("ul");
             playlistData.songs.forEach(song => {
                 const songListItemElement = document.createElement("li");
-                songListItemElement.textContent = `${song.title} by ${song.artist}`;
+                songListItemElement.classList.add("playlist-item");
+
+                const songTitleElement = document.createElement("div");
+                songTitleElement.textContent = song.title;
+                songTitleElement.classList.add("song-title");
+                songListItemElement.appendChild(songTitleElement);
+
+                const songArtistElement = document.createElement("div");
+                songArtistElement.textContent = `${song.artist}`;
+                songArtistElement.classList.add("song-artist");
+                songListItemElement.appendChild(songArtistElement);
+
                 songListElement.appendChild(songListItemElement);
             });
             playlistContainerElement.appendChild(songListElement);
